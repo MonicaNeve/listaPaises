@@ -1,22 +1,36 @@
-type Country = {
-  name: {
-    common: string;
-  }
-}
+import Image from "next/image";
 
-async function getCountries(): Promise<country[]> {
-  const response = await fetch("https://restcountries.com/v3.1/all")
+type Country = {
+    name: {
+    common: string;
+  }; 
+  translations:{
+    por: {
+      common: string;
+    };
+  };
+  flags: {
+    svg: string;
+    alt: string;
+  }
+};
+
+async function getCountries(): Promise<Country[]> {
+  const response = await fetch('https://restcountries.com/v3.1/all')
   return response.json();
 }
 
 export default async function Home() {
   const countries = await getCountries();
-
-  // console.log(countries)
   return (
-    <section className='container flex w-full'>
-      {countries.map((country)=>(<h1 key={country.name.common}>{country.name.common}</h1>))}
-
+    <section className="grid grid-cols-5 w-full container gap-2 mt-16">
+      {countries.map((country)=>(
+        <article className="h-64 min-w-full p-2 bg-white border-2 rounded-xl houver:border-indigo-200 transition-all houver:shadow-xl">
+        <h1 className="font-bold text-xl text-center mt-1" key={country.name.common}>
+          <div className="relative w-full h-40 p-2 overflow-hidden rounded-xl">
+          <Image src={country.flags.svg} alt={country.flags.alt} fill className="object-cover"/></div>
+          {country.translations.por.common}</h1></article>
+      ))}
     </section>
   )
 }
